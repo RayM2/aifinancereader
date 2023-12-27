@@ -15,8 +15,18 @@ def load_data(uploaded_file):
     return None
 
 def generate_financial_context(data):
-    context_summary = "Total monthly expenses: $3000. Highest spending: Dining and Entertainment."
-    return context_summary
+    if data is not None and isinstance(data, pd.DataFrame):
+        # Calculate total monthly expenses
+        total_expenses = data.sum(axis=1).mean()  # Assuming each row represents a month
+
+        # Find the highest spending category
+        highest_spending_category = data.sum().idxmax()
+
+        # Generate the dynamic context summary
+        context_summary = f"Total monthly expenses: ${total_expenses:.2f}. Highest spending: {highest_spending_category}."
+        return context_summary
+    else:
+        return "Invalid or missing financial data."
 
 def ask_openai(question, financial_context):
     try:
